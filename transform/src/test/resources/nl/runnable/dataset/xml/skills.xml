@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<csv:data xmlns:csv="http://runnable.nl/dataset/csv" xmlns:content="http://runnable.nl/dataset/content">
+    <csv:row>
+        <content:id>4aabe43b-aae0-4af4-8ccc-29d060fa94ba</content:id>
+        <content:skill-name>Java</content:skill-name>
+        <content:slug>java</content:slug>
+    </csv:row>
+    <csv:row>
+        <content:id>0cbfbd6a-8e4a-43cb-8aea-f75b71b32c35</content:id>
+        <content:skill-name>Kotlin</content:skill-name>
+        <content:slug>kotlin</content:slug>
+    </csv:row>
+    <csv:row>
+        <content:id>fe796faa-61f3-4a3a-b7c3-e20d064eb41b</content:id>
+        <content:skill-name>Spring</content:skill-name>
+        <content:slug>spring</content:slug>
+    </csv:row>
+    <csv:row>
+        <content:id>e9927a31-4f38-4181-8cf4-a4c06a4d8add</content:id>
+        <content:skill-name>XSLT</content:skill-name>
+        <content:slug>xslt</content:slug>
+    </csv:row>
+    <csv:row>
+        <content:id>29b8c3ef-d151-4605-9ae3-f8d10b50fcb5</content:id>
+        <content:skill-name>XML Schema</content:skill-name>
+        <content:slug>xml-schema</content:slug>
+    </csv:row>
+</csv:data>
