@@ -1,0 +1,18 @@
+@startuml "overview"
+!include C4_Container.puml
+
+AddElementTag("microservice", $shape=EightSidedShape(), $bgColor="SteelBlue", $fontColor="white", $legendText="microservice")
+AddElementTag("storage", $shape=RoundedBoxShape(), $bgColor="LightSkyBlue", $fontColor="white", $legendText="storage")
+
+System_Boundary(c1, "Dataset") {
+    Container(app, "Application", "Spring MVC", "* Upload CSV data\n*Visualize datasets", $tags = "microservice")
+    ContainerDb(mongodb, "Content\ndatabase", "MongoDB", "CSV data", $tags = "storage")
+    ContainerDb(solr, "Content\nsearch engine", "Solr", "Documents", $tags = "storage")
+}
+
+Rel(app, mongodb, "Stores data in")
+Rel(app, solr, "Stores data in")
+
+SHOW_LEGEND($details=Small())
+
+@enduml

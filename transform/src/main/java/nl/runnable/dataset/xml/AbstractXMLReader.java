@@ -67,11 +67,4 @@ public abstract class AbstractXMLReader implements XMLReader {
         return propertyMap.get(name);
     }
 
-//    public SAXSource toSAXSource(InputSource inputSource) {
-//        return new SAXSource(this, inputSource);
-//    }
-//
-//    public SAXSource toSAXSource() {
-//        return new SAXSource(this, new InputSource());
-//    }
 }

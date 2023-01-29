@@ -1,6 +1,7 @@
 package nl.runnable.dataset.xml;
 
 import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.NonNull;
@@ -11,6 +12,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * XMLReader implementation that converts CSV data to SAX events.
@@ -49,53 +52,71 @@ public class CsvXmlReader extends AbstractXMLReader {
                 .withCSVParser(csvParser)
                 .build()) {
 
-            String[] headers;
+            parseCsv(csvReader);
+        }
+    }
+
+    private void parseCsv(CSVReader csvReader) throws IOException, SAXException {
+        String[] headers;
+        try {
+            headers = csvReader.readNext();
+            for (int i = 0; i < headers.length; i++) {
+                headers[i] = configuration.getHeaderElementName().apply(headers[i]);
+            }
+        } catch (CsvValidationException e) {
+            throw new SAXException("CSV does not contain headers");
+        }
+
+        final List<String> invalidHeaders = new ArrayList<>();
+        for (var header : headers) {
+            if (!header.matches("[a-zA-Z]([a-zA-Z0-9_.\\-])*")) {
+                invalidHeaders.add(header);
+            }
+        }
+        if (!invalidHeaders.isEmpty()) {
+            throw new SAXException("Invalid header names: %s".formatted(String.join(",", invalidHeaders)));
+        }
+
+        final var attributes = new AttributesImpl();
+        contentHandler.startDocument();
+
+        final var csvNamespaceUri = configuration.getCsvNamespaceUri();
+        final var csvRootElement = configuration.getCsvRootElement();
+        final var csvRootQName = "%s:%s".formatted(configuration.getCsvNamespacePrefix(), csvRootElement);
+        contentHandler.startPrefixMapping(configuration.getCsvNamespacePrefix(), configuration.getCsvNamespaceUri());
+        contentHandler.startPrefixMapping(configuration.getContentNamespacePrefix(), configuration.getContentNamespaceUri());
+        contentHandler.startElement(csvNamespaceUri, csvRootElement, csvRootQName, attributes);
+
+        String[] fields;
+        do {
             try {
-                headers = csvReader.readNext();
-                for (int i = 0; i < headers.length; i++) {
-                    headers[i] = configuration.getHeaderElementName().apply(headers[i]);
+                fields = csvReader.readNext();
+                if (fields != null && headers.length == fields.length) {
+                    final var csvRowQName = "%s:%s".formatted(configuration.getCsvNamespacePrefix(), configuration.getCsvRowElement());
+                    contentHandler.startElement(csvNamespaceUri, configuration.getCsvRowElement(), csvRowQName, attributes);
+                    for (int i = 0; i < fields.length; i++) {
+                        var header = headers[i];
+                        var field = fields[i];
+
+                        final var contentNamespaceUri = configuration.getContentNamespaceUri();
+                        final var headerQName = "%s:%s".formatted(configuration.getContentNamespacePrefix(), header);
+                        contentHandler.startElement(contentNamespaceUri, header, headerQName, attributes);
+                        contentHandler.characters(field.toCharArray(), 0, field.length());
+                        contentHandler.endElement(contentNamespaceUri, header, headerQName);
+                    }
+                    contentHandler.endElement(csvNamespaceUri, configuration.getCsvRowElement(), csvRowQName);
                 }
             } catch (CsvValidationException e) {
-                throw new SAXException("CSV does not contain headers");
+                throw new SAXException(e.getMessage());
             }
+        } while (fields != null);
 
-            final var attributes = new AttributesImpl();
+        contentHandler.endElement(csvNamespaceUri, csvRootElement, csvRootQName);
 
-            contentHandler.startDocument();
+        contentHandler.endPrefixMapping(configuration.getContentNamespacePrefix());
+        contentHandler.endPrefixMapping(configuration.getCsvNamespacePrefix());
 
-            final var csvNamespaceUri = configuration.getCsvNamespaceUri();
-            final var csvRootElement = configuration.getCsvRootElement();
-            final var csvRootQName = "%s:%s".formatted(configuration.getCsvNamespacePrefix(), csvRootElement);
-            contentHandler.startElement(csvNamespaceUri, csvRootElement, csvRootQName, attributes);
-
-            String[] fields;
-            do {
-                try {
-                    fields = csvReader.readNext();
-                    if (fields != null && headers.length == fields.length) {
-                        final var csvRowQName = "%s:%s".formatted(configuration.getCsvNamespacePrefix(), configuration.getCsvRowElement());
-                        contentHandler.startElement(csvNamespaceUri, configuration.getCsvRowElement(), csvRowQName, attributes);
-                        for (int i = 0; i < fields.length; i++) {
-                            var header = headers[i];
-                            var field = fields[i];
-
-                            final var contentNamespaceUri = configuration.getContentNamespaceUri();
-                            final var headerQName = "%s:%s".formatted(configuration.getContentNamespacePrefix(), header);
-                            contentHandler.startElement(contentNamespaceUri, header, headerQName, attributes);
-                            contentHandler.characters(field.toCharArray(), 0, field.length());
-                            contentHandler.endElement(contentNamespaceUri, header, headerQName);
-                        }
-                        contentHandler.endElement(csvNamespaceUri, configuration.getCsvRowElement(), csvRowQName);
-                    }
-                } catch (CsvValidationException e) {
-                    throw new SAXException(e.getMessage());
-                }
-            } while (fields != null);
-
-            contentHandler.endElement(csvNamespaceUri, csvRootElement, csvRootQName);
-
-            contentHandler.endDocument();
-        }
+        contentHandler.endDocument();
     }
 
     @Override

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DataSetApplication {
+public class DatasetApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataSetApplication.class, args);
+        SpringApplication.run(DatasetApplication.class, args);
     }
 
 }
