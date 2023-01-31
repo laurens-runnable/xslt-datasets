@@ -5,17 +5,17 @@
 
     <parent>
         <groupId>nl.runnable.dataset</groupId>
-        <artifactId>dataset-project</artifactId>
+        <artifactId>xslt-datasets-project</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dataset-app</artifactId>
+    <artifactId>xslt-datasets-app</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-transform</artifactId>
+            <artifactId>xslt-datasets-transform</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

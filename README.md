@@ -1,4 +1,4 @@
-# Datase demo
+# XSLT datasets
 
 Example application that demonstrates the use of XSLT stylesheets to transform CSV data to HTML and PDF.
 
