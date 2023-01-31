@@ -35,3 +35,7 @@ are enabled, meaning that:
 
 * [Kaggle datasets](https://www.kaggle.com/datasets)  
   Dataset community, registration required
+
+## License
+
+[Public Domain](LICENSE)
