@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nl.runnable.dataset.DatasetRepository;
 import nl.runnable.dataset.DatasetSourceFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -28,16 +25,17 @@ public class DatasetController {
     }
 
     @GetMapping("/{name}.html")
-    public ModelAndView datasetHtml(@PathVariable(value = "name") String name,
-                                    @RequestParam(value = "sort", defaultValue = "1") int sort,
-                                    @RequestParam(value = "asc", defaultValue = "true") boolean asc) {
-        final var modelAndView = new ModelAndView();
-        modelAndView.setViewName("dataset/table.html");
+    public ModelAndView datasetHtml(@PathVariable(value = "name") String name) {
+        return getModelAndView(name, "dataset/table.html");
+    }
+
+    @GetMapping("/{name}.pdf")
+    public ModelAndView datasetPdf(@PathVariable(value = "name") String name) {
         final var dataset = repository.find(name).orElseThrow();
-        final var source = datasetSourceFactory.createDatasetPageSource(dataset);
+        final var source = datasetSourceFactory.createDatasetSource(dataset);
+
+        final var modelAndView = new ModelAndView("dataset/table.fo");
         modelAndView.addObject(source);
-        modelAndView.addObject("sortColumn", sort);
-        modelAndView.addObject("sortAscending", asc);
         return modelAndView;
     }
 
@@ -58,6 +56,30 @@ public class DatasetController {
         final var modelAndView = new ModelAndView();
         modelAndView.setView(new ResourceView(dataset.resource(), "text/plain"));
         return modelAndView;
+    }
+
+    @ModelAttribute("sortColumn")
+    public int sortColumn(@RequestParam(value = "sort", defaultValue = "1") int sort) {
+        return sort;
+    }
+
+    private ModelAndView getModelAndView(String name, String viewName) {
+        final var dataset = repository.find(name).orElseThrow();
+        final var source = datasetSourceFactory.createDatasetPageSource(dataset);
+
+        final var modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject(source);
+        return modelAndView;
+    }
+
+    @ModelAttribute("sortOrder")
+    public String sortOrder(@RequestParam(value = "asc", defaultValue = "true") boolean asc) {
+        return asc ? "ascending" : "descending";
+    }
+
+    @ModelAttribute("pageOrientation")
+    public String pageOrientation(@RequestParam(value = "portrait", defaultValue = "true") boolean portrait) {
+        return portrait ? "portrait" : "landscape";
     }
 
 }

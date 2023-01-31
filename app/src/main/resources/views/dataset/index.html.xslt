@@ -10,7 +10,7 @@
                 <table class="table">
                     <thead>
                         <th>Dataset</th>
-                        <th colspan="3">Alternative formats</th>
+                        <th colspan="4">Alternative formats</th>
                     </thead>
                     <tbody>
                         <xsl:for-each select="dataset">
@@ -27,9 +27,10 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{$basePath}.pdf">
-                                        PDF
-                                    </a>
+                                    <a href="{$basePath}.pdf">PDF</a>
+                                </td>
+                                <td>
+                                    <a href="{$basePath}.pdf?portrait=false">PDF landscape</a>
                                 </td>
                                 <td>
                                     <a href="{$basePath}.csv">

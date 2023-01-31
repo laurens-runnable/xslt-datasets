@@ -1,49 +1,37 @@
-# Dataset
+# Datase demo
 
-* Convert CSV data to XML
-* Transform XML using XSLT stylesheets
+Example application that demonstrates the use of XSLT stylesheets to transform CSV data to HTML and PDF.
 
-## Local development
+The current implementation produces simple table output. More sophisticated examples may follow.
+
+# Stack
 
 * OpenJDK 17
-* Docker
+* [Spring Boot](https://github.com/spring-projects/spring-boot)
+  and [Spring MVC](https://github.com/spring-projects/spring-framework)
+* [Saxon HE](https://github.com/Saxonica/Saxon-HE)
+* [Apache FOP](https://github.com/apache/xmlgraphics-fop)
 
-### Docker containers
-
-For convenience, you can run in-memory instances for the infrastructure.
-
-```bash
-# Start Docker containers
-./local-dev/bin/up.sh
-
-# Follow logs
-./local-dev/bin/follow-logs.sh
-
-# Stop containers
-./local-dev/bin/down.sh
-```
-
-### Run
+## Run
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
+* [http://localhost:8080/](http://localhost:8080/)
+* Save `.csv` files in the [`datasets`](datasets) directory
+* Reload the main page to browse the available datasets
+
+### Spring Developer tools
+
 [Spring Boot Developer Tools](https://docs.spring.io/spring-boot/docs/3.0.2/reference/html/using.html#using.devtools)
-are enabled:
+are enabled, meaning that:
 
-* The application restarts automatically after a resource on the classpath is updated.
-* The browser reloads the current page when the [LiveReload](https://github.com/livereload/livereload-js) extension is
-  installed.
+* the application restarts automatically after a resource on the classpath is updated
+* the browser reloads the current page when the [LiveReload](https://github.com/livereload/livereload-js) extension is
+  installed
 
-## Example datasets
+## Resources
 
 * [Kaggle datasets](https://www.kaggle.com/datasets)  
   Dataset community, registration required
-
-## Stack
-
-* [Spring Boot](https://github.com/spring-projects/spring-boot)
-* [Saxon HE](https://github.com/Saxonica/Saxon-HE)
-* [JDOM](https://github.com/hunterhacker/jdom)
-* [Apache Solr](https://github.com/apache/solr)

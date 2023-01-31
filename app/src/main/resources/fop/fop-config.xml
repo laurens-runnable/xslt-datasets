@@ -1,0 +1,24 @@
+<fop version="1.0">
+    <strict-configuration>true</strict-configuration>
+    <strict-validation>true</strict-validation>
+    <base>./</base>
+    <font-base>./</font-base>
+    <source-resolution>300</source-resolution>
+    <target-resolution>300</target-resolution>
+    <!-- A4 format -->
+    <default-page-settings height="297mm" width="210mm"/>
+
+    <renderers>
+        <renderer mime="application/pdf">
+            <fonts>
+                <font embed-url="classpath:/fonts/Inter-Regular.otf">
+                    <font-triplet name="Inter" style="normal" weight="normal"/>
+                </font>
+                <font embed-url="classpath:/fonts/Inter-Bold.otf">
+                    <font-triplet name="Inter" style="normal" weight="bold"/>
+                </font>
+            </fonts>
+        </renderer>
+    </renderers>
+
+</fop>

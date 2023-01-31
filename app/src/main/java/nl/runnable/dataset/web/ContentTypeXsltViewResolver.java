@@ -26,6 +26,8 @@ class ContentTypeXsltViewResolver extends XsltViewResolver {
         final var format = viewName.replaceFirst("^.+\\.(\\w+)$", "$1");
         if (format.equals("xml")) {
             return Optional.of("text/xml");
+        } else if (format.equals("fo")) {
+            return Optional.of("application/pdf");
         }
         return Optional.empty();
     }
