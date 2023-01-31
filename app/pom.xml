@@ -41,6 +41,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <skip>false</skip>
+                    <workingDirectory>${project.parent.basedir}</workingDirectory>
                     <profiles>
                         <profile>local</profile>
                         <profile>test-set</profile>
