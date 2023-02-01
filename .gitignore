@@ -15,3 +15,6 @@ buildNumber.properties
 
 # MacOS
 .DS_Store
+
+# Project
+tmp

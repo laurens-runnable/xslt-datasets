@@ -20,7 +20,7 @@ public class FopConfig {
     private Resource fopConfig;
 
     @Bean
-    FopFactory fopFactory(SpringResourceResolver resourceResolver) {
+    FopFactory fopFactory(ResourceLoaderResourceResolver resourceResolver) {
         try {
             final var configurationBuilder = new DefaultConfigurationBuilder();
             final var configuration = configurationBuilder.build(fopConfig.getInputStream());

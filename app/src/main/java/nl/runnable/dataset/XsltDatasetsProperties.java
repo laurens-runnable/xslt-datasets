@@ -1,7 +1,7 @@
 package nl.runnable.dataset;
 
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,12 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class XsltDatasetsProperties {
 
     @Getter
+    @Setter
     private String directory;
 
-    public void setDirectory(@NonNull String directory) {
-        while (directory.endsWith("/")) {
-            directory = directory.substring(0, directory.length() - 1);
-        }
-        this.directory = directory;
-    }
 }

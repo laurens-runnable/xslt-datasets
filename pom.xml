@@ -23,7 +23,7 @@
         <xmlunit.version>2.9.1</xmlunit.version>
         <!-- Use FOP 2.6 to avoid classpath loading errors in FOP 2.7 and later -->
         <fop.version>2.6</fop.version>
-        <jsoup.version>1.12.1</jsoup.version>
+        <htmlcleaner.version>2.26</htmlcleaner.version>
     </properties>
 
     <groupId>nl.runnable.dataset</groupId>
@@ -99,6 +99,12 @@
                 <groupId>org.xmlunit</groupId>
                 <artifactId>xmlunit-core</artifactId>
                 <version>${xmlunit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.htmlcleaner</groupId>
+                <artifactId>htmlcleaner</artifactId>
+                <version>${htmlcleaner.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

@@ -16,6 +16,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.stream.Stream;
@@ -33,6 +34,10 @@ class JdomDatasetSourceFactory implements DatasetSourceFactory {
         datasets.map(dataset -> {
                     final var element = new Element("dataset");
                     element.setAttribute("name", dataset.name());
+                    element.setAttribute("type", dataset.type().name());
+                    element.setAttribute("hasHtmlFormat", Boolean.toString(dataset.hasHtmlFormat()));
+                    element.setAttribute("hasPdfFormat", Boolean.toString(dataset.hasPdfFormat()));
+                    element.setAttribute("hasCsvFormat", Boolean.toString(dataset.hasCsvFormat()));
                     return element;
                 })
                 .forEach(datasetsElement::addContent);
@@ -47,7 +52,7 @@ class JdomDatasetSourceFactory implements DatasetSourceFactory {
     @Override
     public Source createDatasetPageSource(@NonNull Dataset dataset) {
         try {
-            final var source = createDatasetSource(dataset);
+            final var source = createDatasetXmlSource(dataset);
             final var transformer = TransformerFactory.newInstance().newTransformer();
             final var result = new JDOMResult();
             transformer.transform(source, result);
@@ -64,12 +69,17 @@ class JdomDatasetSourceFactory implements DatasetSourceFactory {
     }
 
     @Override
-    public Source createDatasetSource(Dataset dataset) {
+    public Source createDatasetXmlSource(Dataset dataset) {
         try {
-            final InputSource inputSource = new InputSource(new InputStreamReader(dataset.resource().getInputStream()));
-            final var saxSource = new SAXSource(inputSource);
-            saxSource.setXMLReader(new CsvXmlReader());
-            return saxSource;
+            return switch (dataset.type()) {
+                case CSV -> {
+                    final InputSource inputSource = new InputSource(new InputStreamReader(dataset.resource().getInputStream()));
+                    final var saxSource = new SAXSource(inputSource);
+                    saxSource.setXMLReader(new CsvXmlReader());
+                    yield saxSource;
+                }
+                case XML -> new StreamSource(dataset.resource().getInputStream());
+            };
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

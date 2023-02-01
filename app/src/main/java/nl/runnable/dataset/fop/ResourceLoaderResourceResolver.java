@@ -13,7 +13,7 @@ import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
-class SpringResourceResolver implements ResourceResolver {
+class ResourceLoaderResourceResolver implements ResourceResolver {
 
     private final ResourceLoader resourceLoader;
 

@@ -7,20 +7,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
 @Configuration
-public class MvcConfig {
+class ViewResolverConfig {
 
     @Bean
     public FopXsltViewResolver fopXsltViewResolver(FopFactory fopFactory) {
         var viewResolver = new FopXsltViewResolver(fopFactory);
         viewResolver.setPrefix("classpath:/views/");
         viewResolver.setSuffix(".xslt");
+        // Configure the FOP ViewResolver with the highest precedence, so that it overrides
+        // Spring's default ContentNegotiatingViewResolver behaviour.
         viewResolver.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return viewResolver;
     }
 
     @Bean
-    public ContentTypeXsltViewResolver xsltViewResolver() {
-        var viewResolver = new ContentTypeXsltViewResolver();
+    public DatasetXsltViewResolver datasetXsltViewResolver() {
+        var viewResolver = new DatasetXsltViewResolver();
         viewResolver.setPrefix("classpath:/views/");
         viewResolver.setSuffix(".xslt");
         return viewResolver;

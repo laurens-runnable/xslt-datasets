@@ -15,40 +15,64 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 class ResourceLoaderDatasetRepository implements DatasetRepository {
 
     private final ResourcePatternResolver resourcePatternResolver;
 
-    @Value("${xslt-datasets.directory}")
     private String directory;
+
+    @Value("${xslt-datasets.directory}")
+    public void setDirectory(String directory) {
+        while (directory.endsWith("/")) {
+            directory = directory.substring(0, directory.length() - 1);
+        }
+        this.directory = directory;
+    }
 
     @Override
     public Optional<Dataset> find(String name) {
-        final var filename = "%s/%s.csv".formatted(directory, name);
-        final var resource = resourcePatternResolver.getResource(filename);
-        if (resource.exists()) {
-            return Optional.of(new Dataset(resolveName(resource), resource));
-        } else {
-            return Optional.empty();
+        final var csv = resourcePatternResolver.getResource("%s/%s.csv".formatted(directory, name));
+        if (csv.exists()) {
+            return Optional.of(Dataset.forCsv(resolveName(csv), csv));
         }
+
+        final var xml = resourcePatternResolver.getResource("%s/%s.xml".formatted(directory, name));
+        if (xml.exists()) {
+            final var hasHtmlFormat = stylesheetExists("%s.html".formatted(name));
+            final var hasPdfFormat = stylesheetExists("%s.fo".formatted(name));
+            return Optional.of(Dataset.forXml(name, xml, hasHtmlFormat, hasPdfFormat));
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public Stream<Dataset> findAll() {
         try {
-            final var pattern = "%s/*.csv".formatted(directory);
-            return Stream.of(resourcePatternResolver.getResources(pattern))
-                    .map(resource -> {
-                        String name = resolveName(resource);
-                        return new Dataset(name, resource);
+            final var csvs = Stream.of(resourcePatternResolver.getResources("%s/*.csv".formatted(directory)))
+                    .map(csv -> Dataset.forCsv(resolveName(csv), csv));
+            final var xmls = Stream.of(resourcePatternResolver.getResources("%s/*.xml".formatted(directory)))
+                    .map(xml -> {
+                        final var name = resolveName(xml);
+                        final var hasHtmlFormat = stylesheetExists("%s.html".formatted(name));
+                        final var hasPdfFormat = stylesheetExists("%s.fo".formatted(name));
+                        return Dataset.forXml(name, xml, hasHtmlFormat, hasPdfFormat);
                     });
+            return Stream.concat(csvs, xmls).sorted((a, b) -> a.name().compareToIgnoreCase(b.name()));
         } catch (IOException e) {
             log.warn("Error resolving resources: {}", e.getMessage());
             return Stream.empty();
         }
     }
+
+    @Override
+    public boolean stylesheetExists(@NonNull String name) {
+        final var xslt = resourcePatternResolver.getResource("%s/%s.xslt".formatted(directory, name));
+        return xslt.exists();
+    }
+
 
     @NonNull
     private static String resolveName(@NonNull Resource resource) {

@@ -7,10 +7,10 @@ import java.util.stream.Stream;
 
 public interface DatasetSourceFactory {
 
-    Source createIndexPageSource(Stream<Dataset> datasets);
+    Source createIndexPageSource(@NonNull Stream<Dataset> datasets);
 
     Source createDatasetPageSource(@NonNull Dataset dataset);
 
-    Source createDatasetSource(@NonNull Dataset dataset);
+    Source createDatasetXmlSource(@NonNull Dataset dataset);
 
 }

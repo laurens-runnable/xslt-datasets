@@ -18,9 +18,11 @@ The current implementation produces simple table output. More sophisticated exam
 ./mvnw spring-boot:run
 ```
 
-* [http://localhost:8080/](http://localhost:8080/)
-* Save `.csv` files in the [`datasets`](datasets) directory
-* Reload the main page to browse the available datasets
+* [http://localhost:8080/](http://localhost:8080/) to open the web interface
+* Save `.csv` and `.xml` files in the [`datasets`](datasets) directory  
+  Note that the application does not support duplicate base names. E.g. it cannot properly distinguish between
+  datasets `items.csv` and `items.xml`.
+* Reload the web page to refresh the datasets
 
 ### Spring Developer tools
 
