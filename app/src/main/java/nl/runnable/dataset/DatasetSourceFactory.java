@@ -13,5 +13,4 @@ public interface DatasetSourceFactory {
 
     Source createDatasetSource(@NonNull Dataset dataset);
 
-
 }

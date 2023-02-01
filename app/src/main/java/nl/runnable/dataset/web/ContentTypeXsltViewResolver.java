@@ -6,10 +6,23 @@ import org.springframework.web.servlet.view.xslt.XsltView;
 import org.springframework.web.servlet.view.xslt.XsltViewResolver;
 
 import javax.xml.transform.OutputKeys;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+/**
+ * {@link XsltViewResolver} that configures the stylesheet output's output content type based on the
+ * view name suffix.
+ */
 class ContentTypeXsltViewResolver extends XsltViewResolver {
+
+    private final Map<String, String> mimeTypesBySuffix = new HashMap<>();
+
+    public ContentTypeXsltViewResolver() {
+        mimeTypesBySuffix.put("xml", "text/xml");
+        mimeTypesBySuffix.put("fo", "application/pdf");
+    }
 
     @Override
     protected AbstractUrlBasedView buildView(String viewName) throws Exception {
@@ -22,14 +35,10 @@ class ContentTypeXsltViewResolver extends XsltViewResolver {
         return view;
     }
 
-    private static Optional<String> resolveContentType(@NonNull String viewName) {
-        final var format = viewName.replaceFirst("^.+\\.(\\w+)$", "$1");
-        if (format.equals("xml")) {
-            return Optional.of("text/xml");
-        } else if (format.equals("fo")) {
-            return Optional.of("application/pdf");
-        }
-        return Optional.empty();
+    private Optional<String> resolveContentType(@NonNull String viewName) {
+        final var suffix = viewName.replaceFirst("^.+\\.(\\w+)$", "$1");
+        return mimeTypesBySuffix.containsKey(suffix) ?
+                Optional.of(mimeTypesBySuffix.get(suffix)) : Optional.empty();
     }
 
 }

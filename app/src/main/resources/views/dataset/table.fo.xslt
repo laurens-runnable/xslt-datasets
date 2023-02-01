@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:csv="http://runnable.nl/dataset/csv"
                 xmlns:content="http://runnable.nl/dataset/content">
@@ -36,41 +36,43 @@
     <xsl:template match="csv:data">
         <fo:page-sequence master-reference="{concat('A4-', $pageOrientation)}">
             <fo:flow flow-name="xsl-region-body" font-family="{$fontFamily}">
-                <fo:table>
-                    <fo:table-body>
-                        <xsl:apply-templates select="." mode="header"/>
-                        <xsl:apply-templates select="." mode="content"/>
-                    </fo:table-body>
+                <fo:table table-layout="fixed" width="100%">
+                    <xsl:apply-templates select="." mode="header"/>
+                    <xsl:apply-templates select="." mode="body"/>
                 </fo:table>
             </fo:flow>
         </fo:page-sequence>
     </xsl:template>
 
     <xsl:template match="csv:data" mode="header">
-        <fo:table-row>
-            <xsl:for-each select="csv:row[1]/content:*">
-                <fo:table-cell>
-                    <fo:block font-weight="bold">
-                        <xsl:value-of select="local-name(.)"/>
-                    </fo:block>
-                </fo:table-cell>
-            </xsl:for-each>
-        </fo:table-row>
-    </xsl:template>
-
-    <xsl:template match="csv:data" mode="content">
-        <xsl:for-each select="csv:row">
-            <xsl:sort select="content:*[$sortColumn]" order="{$sortOrder}"/>
+        <fo:table-header font-weight="bold">
             <fo:table-row>
-                <xsl:for-each select="content:*">
+                <xsl:for-each select="csv:row[1]/content:*">
                     <fo:table-cell>
                         <fo:block>
-                            <xsl:value-of select="."/>
+                            <xsl:value-of select="local-name(.)"/>
                         </fo:block>
                     </fo:table-cell>
                 </xsl:for-each>
             </fo:table-row>
-        </xsl:for-each>
+        </fo:table-header>
+    </xsl:template>
+
+    <xsl:template match="csv:data" mode="body">
+        <fo:table-body>
+            <xsl:for-each select="csv:row">
+                <xsl:sort select="content:*[$sortColumn]" order="{$sortOrder}"/>
+                <fo:table-row>
+                    <xsl:for-each select="content:*">
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:value-of select="."/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </xsl:for-each>
+                </fo:table-row>
+            </xsl:for-each>
+        </fo:table-body>
     </xsl:template>
 
 </xsl:stylesheet>

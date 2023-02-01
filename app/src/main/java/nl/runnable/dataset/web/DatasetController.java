@@ -26,7 +26,12 @@ public class DatasetController {
 
     @GetMapping("/{name}.html")
     public ModelAndView datasetHtml(@PathVariable(value = "name") String name) {
-        return getModelAndView(name, "dataset/table.html");
+        final var dataset = repository.find(name).orElseThrow();
+        final var source = datasetSourceFactory.createDatasetPageSource(dataset);
+
+        final var modelAndView = new ModelAndView("dataset/table.html");
+        modelAndView.addObject(source);
+        return modelAndView;
     }
 
     @GetMapping("/{name}.pdf")
@@ -54,22 +59,13 @@ public class DatasetController {
         final var dataset = repository.find(name).orElseThrow();
 
         final var modelAndView = new ModelAndView();
-        modelAndView.setView(new ResourceView(dataset.resource(), "text/plain"));
+        modelAndView.setView(new ResourceView(dataset.resource(), "text/csv"));
         return modelAndView;
     }
 
     @ModelAttribute("sortColumn")
     public int sortColumn(@RequestParam(value = "sort", defaultValue = "1") int sort) {
         return sort;
-    }
-
-    private ModelAndView getModelAndView(String name, String viewName) {
-        final var dataset = repository.find(name).orElseThrow();
-        final var source = datasetSourceFactory.createDatasetPageSource(dataset);
-
-        final var modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject(source);
-        return modelAndView;
     }
 
     @ModelAttribute("sortOrder")

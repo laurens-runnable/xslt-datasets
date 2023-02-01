@@ -21,12 +21,13 @@ class ResourceLoaderDatasetRepository implements DatasetRepository {
 
     private final ResourcePatternResolver resourcePatternResolver;
 
-    @Value("${datasets.directory:./datasets}")
+    @Value("${xslt-datasets.directory}")
     private String directory;
 
     @Override
     public Optional<Dataset> find(String name) {
-        final var resource = resourcePatternResolver.getResource("file:%s/%s.csv".formatted(directory, name));
+        final var filename = "%s/%s.csv".formatted(directory, name);
+        final var resource = resourcePatternResolver.getResource(filename);
         if (resource.exists()) {
             return Optional.of(new Dataset(resolveName(resource), resource));
         } else {
@@ -37,7 +38,7 @@ class ResourceLoaderDatasetRepository implements DatasetRepository {
     @Override
     public Stream<Dataset> findAll() {
         try {
-            final var pattern = "file:%s/*.csv".formatted(directory);
+            final var pattern = "%s/*.csv".formatted(directory);
             return Stream.of(resourcePatternResolver.getResources(pattern))
                     .map(resource -> {
                         String name = resolveName(resource);
@@ -52,7 +53,7 @@ class ResourceLoaderDatasetRepository implements DatasetRepository {
     @NonNull
     private static String resolveName(@NonNull Resource resource) {
         var name = resource.getFilename();
-        if (name == null) {
+        if (name == null || name.lastIndexOf('.') == -1) {
             return "";
         }
         name = name.substring(0, name.lastIndexOf('.'));

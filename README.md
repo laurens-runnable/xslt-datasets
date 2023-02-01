@@ -6,7 +6,7 @@ The current implementation produces simple table output. More sophisticated exam
 
 # Stack
 
-* OpenJDK 17
+* [OpenJDK 17](https://openjdk.org/projects/jdk/17/)
 * [Spring Boot](https://github.com/spring-projects/spring-boot)
   and [Spring MVC](https://github.com/spring-projects/spring-framework)
 * [Saxon HE](https://github.com/Saxonica/Saxon-HE)

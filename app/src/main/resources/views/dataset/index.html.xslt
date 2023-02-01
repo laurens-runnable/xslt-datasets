@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
->
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:include href="../page.html.xslt"/>
 
@@ -27,7 +26,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{$basePath}.pdf">PDF</a>
+                                    <a href="{$basePath}.pdf">PDF portrait</a>
                                 </td>
                                 <td>
                                     <a href="{$basePath}.pdf?portrait=false">PDF landscape</a>
@@ -44,6 +43,5 @@
             </div>
         </div>
     </xsl:template>
-
 
 </xsl:stylesheet>

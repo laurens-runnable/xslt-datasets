@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:content="http://runnable.nl/dataset/content"
                 xmlns:csv="http://runnable.nl/dataset/csv">
 
@@ -43,9 +43,5 @@
     <xsl:template match="content:*" mode="th">
         <xsl:value-of select="local-name(.)"/>
     </xsl:template>
-
-    <!--    <xsl:template match="content:*[starts-with(local-name(.), 'year-')]" mode="th">-->
-    <!--        <xsl:value-of select="substring-after(local-name(.), 'year-')"/>-->
-    <!--    </xsl:template>-->
 
 </xsl:stylesheet>

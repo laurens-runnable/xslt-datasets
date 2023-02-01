@@ -24,6 +24,6 @@ public class StylesheetParamsControllerAdvice {
     @ModelAttribute("contextPath")
     String contextPath(HttpServletRequest request) {
         return request.getContextPath();
-
     }
+
 }
